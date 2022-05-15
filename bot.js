@@ -132,7 +132,7 @@ bot.on("/set_title", async (msg) => {
 bot.on("/in", async (msg) => {
   const description = getCommandParameter(msg.text)
   const chatId = msg.chat.id
-  const { id: telegramId, username } = msg.from
+  const { id: telegramId, username, first_name } = msg.from
   try {
     let groupLobby = await lobbyServices.getGroupLobby(chatId)
     if (!groupLobby) {
