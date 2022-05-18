@@ -8,7 +8,7 @@ const createUserDataList = users => {
   const list = []
   users.forEach((user, index) => {
     const description = user.description ? ` (${user.description})` : ""
-    const text = `${index + 1}. ${user.username}${description}`
+    const text = `${index + 1}. ${user.username || user.name}${description}`
     list.push(text)
   })
   return list
@@ -213,7 +213,7 @@ bot.on("/notify", async msg => {
       }
     }
     const mentions = groupLobby.in
-      .map(user => (user.username ? `@${user.username}` : `[${user.name}](tg://user?id=${telegramId})`))
+      .map(user => (user.username ? `@${user.username}` : `[${user.name}](tg://user?id=${user.telegramId})`))
       .join(" ")
     const message = `${notificationMessage} ${mentions}`
     return bot.sendMessage(chatId, message, { parseMode: "MarkdownV2" })
