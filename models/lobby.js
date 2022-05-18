@@ -17,6 +17,7 @@ const Lobby = mongoose.Schema({
     {
       telegramId: Number,
       username: String,
+      name: String,
       description: String,
     },
   ],
@@ -24,6 +25,7 @@ const Lobby = mongoose.Schema({
     {
       telegramId: Number,
       username: String,
+      name: String,
       description: String,
     },
   ],
@@ -31,6 +33,7 @@ const Lobby = mongoose.Schema({
     {
       telegramId: Number,
       username: String,
+      name: String,
       description: String,
     },
   ],

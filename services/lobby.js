@@ -31,17 +31,18 @@ const deleteGroupLobby = async chatId => {
 /**
  * Adds the user to the "in" list of the current group lobby
  * @param {Numer} chatId Telegram group id
- * @param {(in|maybe|out)} listType List that the user is joining 
+ * @param {(in|maybe|out)} listType List that the user is joining
  * @param {Number} telegramId Telegram user id joining the lobby
  * @param {String} username Telegram username joining the lobby
  * @param {String} description Description about participation
  * @returns {Promise<Object>} Updated lobby
  */
-const joinGroupLobby = async (chatId, listType, telegramId, username, description) => {
-  const removeUserFromLobby = (lobby, username) => {
-    lobby.in = lobby.in.filter(user => user.username !== username)
-    lobby.maybe = lobby.maybe.filter(user => user.username !== username)
-    lobby.out = lobby.out.filter(user => user.username !== username)
+const joinGroupLobby = async (chatId, listType, telegramId, username, name, description) => {
+  const removeUserFromLobby = (lobby, telegramId, name) => {
+    const filter = user => (telegramId ? user.telegramId !== telegramId : user.name !== name)
+    lobby.in = lobby.in.filter(filter)
+    lobby.maybe = lobby.maybe.filter(filter)
+    lobby.out = lobby.out.filter(filter)
   }
 
   const lobby = await Lobby.findOne({ chatId })
@@ -52,9 +53,9 @@ const joinGroupLobby = async (chatId, listType, telegramId, username, descriptio
     }
   }
 
-  removeUserFromLobby(lobby, username)
+  removeUserFromLobby(lobby, telegramId, name)
 
-  lobby[listType].push({ telegramId, username, description })
+  lobby[listType].push({ telegramId, username, name, description })
 
   return await lobby.save()
 }
@@ -62,7 +63,7 @@ const joinGroupLobby = async (chatId, listType, telegramId, username, descriptio
 /**
  * Set a new title for the current group lobby
  * @param {Numer} chatId Telegram group id
- * @param {Object} data New data for the group 
+ * @param {Object} data New data for the group
  * @returns {Promise<Object>} Updated lobby
  */
 const setGroupLobbyTitle = async (chatId, title) => {
@@ -83,5 +84,5 @@ module.exports = {
   createGroupLobby,
   deleteGroupLobby,
   joinGroupLobby,
-  setGroupLobbyTitle
+  setGroupLobbyTitle,
 }
