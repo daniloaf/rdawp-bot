@@ -129,8 +129,8 @@ bot.on("/set_title", async msg => {
   }
 })
 
-bot.on("/in", async msg => {
-  const description = getCommandParameter(msg.text)
+bot.on(/^\/(?<type>in|out|maybe)(@.+)?(\s+(?<name>.+))?$/, async (msg, props) => {
+  const { type, description } = props.match.groups
   const chatId = msg.chat.id
   const { id: telegramId, username, first_name } = msg.from
   try {
@@ -141,7 +141,7 @@ bot.on("/in", async msg => {
         message: "There's no lobby created",
       }
     }
-    groupLobby = await lobbyServices.joinGroupLobby(chatId, "in", telegramId, username, first_name, description)
+    groupLobby = await lobbyServices.joinGroupLobby(chatId, type, telegramId, username, first_name, description)
     return bot.sendMessage(chatId, formatLobbyMessage(groupLobby))
   } catch (err) {
     if (err.notify) {
@@ -152,11 +152,9 @@ bot.on("/in", async msg => {
     }
   }
 })
-
-bot.on("/maybe", async msg => {
-  const description = getCommandParameter(msg.text)
+bot.on(/^\/set_(?<type>in|out|maybe)_for(@.+)? (?<name>.+)$/, async (msg, props) => {
+  const { type, name } = props.match.groups
   const chatId = msg.chat.id
-  const { id: telegramId, username, first_name } = msg.from
   try {
     let groupLobby = await lobbyServices.getGroupLobby(chatId)
     if (!groupLobby) {
@@ -165,31 +163,7 @@ bot.on("/maybe", async msg => {
         message: "There's no lobby created",
       }
     }
-    groupLobby = await lobbyServices.joinGroupLobby(chatId, "maybe", telegramId, username, first_name, description)
-    return bot.sendMessage(chatId, formatLobbyMessage(groupLobby))
-  } catch (err) {
-    if (err.notify) {
-      return bot.sendMessage(chatId, err.message)
-    } else {
-      console.error(err)
-      return bot.sendMessage(chatId, "Unexpected error when trying to join a lobby")
-    }
-  }
-})
-
-bot.on("/out", async msg => {
-  const description = getCommandParameter(msg.text)
-  const chatId = msg.chat.id
-  const { id: telegramId, username, first_name } = msg.from
-  try {
-    let groupLobby = await lobbyServices.getGroupLobby(chatId)
-    if (!groupLobby) {
-      throw {
-        notify: true,
-        message: "There's no lobby created",
-      }
-    }
-    groupLobby = await lobbyServices.joinGroupLobby(chatId, "out", telegramId, username, first_name, description)
+    groupLobby = await lobbyServices.joinGroupLobby(chatId, type, null, null, name, null)
     return bot.sendMessage(chatId, formatLobbyMessage(groupLobby))
   } catch (err) {
     if (err.notify) {
@@ -213,9 +187,9 @@ bot.on("/notify", async msg => {
       }
     }
     const mentions = groupLobby.in
-      .map(user => (user.username ? `@${user.username}` : `[${user.name}](tg://user?id=${user.telegramId})`))
+      .map(user => (`[${user.name}](tg://user?id=${user.telegramId})`))
       .join(" ")
-    const message = `${notificationMessage} ${mentions}`
+    const message = mentions ? `${notificationMessage} ${mentions}` : "There is no one to notify"
     return bot.sendMessage(chatId, message, { parseMode: "MarkdownV2" })
   } catch (err) {
     if (err.notify) {
