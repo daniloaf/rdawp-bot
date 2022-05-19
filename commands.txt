@@ -1,0 +1,11 @@
+create - Starts a new lobby. You can also send a title
+end - Finishes the current lobby
+set_title - Set a new title for the lobby
+current - Get the current lobby
+in - Add you to the list of participants of the lobby. You can send also a description about it
+maybe - Add you to the "maybe" list in the current lobby. You can also send a description about it
+out - Add you to the list of non-participants of the lobby. You can also send a description about it
+set_in_for - Add someone to the list of participants of the lobby
+set_maybe_for - Add someone to the "maybe" list in the current lobby
+set_out_for - Add someone to the list of non-participants of the lobby
+notify - Sends a notification for all participants. You can also add a custom message
