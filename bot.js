@@ -129,7 +129,7 @@ bot.on("/set_title", async msg => {
   }
 })
 
-bot.on(/^\/(?<type>in|out|maybe)(@.+)?(\s+(?<name>.+))?$/, async (msg, props) => {
+bot.on(/^\/(?<type>in|out|maybe)(@.+)?(\s+(?<description>.+))?$/, async (msg, props) => {
   const { type, description } = props.match.groups
   const chatId = msg.chat.id
   const { id: telegramId, username, first_name } = msg.from
