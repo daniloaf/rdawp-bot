@@ -129,7 +129,7 @@ bot.on("/set_title", async msg => {
   }
 })
 
-bot.on(/^\/(?<type>in|out|maybe)(@.+)?(\s+(?<description>.+))?$/, async (msg, props) => {
+bot.on(/^\/(?<type>in|out|maybe)(@\w+)?(\s+(?<description>.+))?$/, async (msg, props) => {
   const { type, description } = props.match.groups
   const chatId = msg.chat.id
   const { id: telegramId, username, first_name } = msg.from
@@ -152,7 +152,8 @@ bot.on(/^\/(?<type>in|out|maybe)(@.+)?(\s+(?<description>.+))?$/, async (msg, pr
     }
   }
 })
-bot.on(/^\/set_(?<type>in|out|maybe)_for(@.+)? (?<name>.+)$/, async (msg, props) => {
+
+bot.on(/^\/set_(?<type>in|out|maybe)_for(@\w+)? (?<name>.+)$/, async (msg, props) => {
   const { type, name } = props.match.groups
   const chatId = msg.chat.id
   try {
